@@ -154,7 +154,6 @@ class LieuxController extends AbstractController
         $jsonLieux = $serializer->serialize($lieu, 'json', ['groups' => 'getLieux']);
 
         $location = $urlGenerator->generate('lieux.get', ['idLieux' => $Lieux->getId()]);
-        return new JsonResponse($jsonLieux, Response::HTTP_CREATED, location[$location], true); 
-        
+        return new JsonResponse($jsonLieux, Response::HTTP_CREATED, location[$location], true);
     }
 }

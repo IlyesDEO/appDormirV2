@@ -28,39 +28,42 @@ private Generator $faker;
         // $product = new Product();
         // $manager->persist($product);
          
-        //Ville
-        $Villes = [];        
+        //Ville  
+        $villes = [];     
         $ville = new Ville();
         $ville->setNomVille("Lyon")
-            ->setCP(69003);
+            ->setCP(69003)
+            ->setStatus(1);
         $manager->persist($ville);
-        $villes = $ville;
+        $villes[] = $ville;
         $manager->flush();
         
         //Lieux
-        $lieux = new lieux();
+        $lieux = new Lieux();
             $lieux->setDescription("Foyer chaleureux")
             ->setNote(8)
             ->setAdresse("236 cours Lafayette")
             ->setStatus(1)
-            ->setIdVille($$villes[0]);
+            ->setIdVille($villes[0]);
         $manager->persist($lieux);
         $manager->flush();
     
 
-        $lieux = new lieux();
+        $lieux = new Lieux();
         $lieux->setDescription("Gare de part-dieu")
             ->setNote(8)
             ->setAdresse("5 Pl. Charles Béraudier, 69003 Lyon")
-            ->setStatus(1);
+            ->setStatus(1)
+            ->setIdVille($villes[0]);
         $manager->persist($lieux);
         $manager->flush();
 
-        $lieux = new lieux();
+        $lieux = new Lieux();
         $lieux->setDescription("Confluence")
             ->setNote(8)
             ->setAdresse("112 Cr Charlemagne, 69002 Lyon ")
-            ->setStatus(1);
+            ->setStatus(1)
+            ->setIdVille($villes[0]);
         $manager->persist($lieux);
         $manager->flush();
 
