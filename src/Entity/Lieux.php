@@ -37,6 +37,10 @@ class Lieux
     #[ORM\OneToMany(mappedBy: 'idVille', targetEntity: self::class)]
     private Collection $lieux;
 
+    #[ORM\ManyToOne(inversedBy: 'lieux')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categorie $idCat = null;
+
     public function __construct()
     {
         $this->lieux = new ArrayCollection();
@@ -134,6 +138,18 @@ class Lieux
                 $lieux->setIdVille(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIdCat(): ?Categorie
+    {
+        return $this->idCat;
+    }
+
+    public function setIdCat(?Categorie $idCat): self
+    {
+        $this->idCat = $idCat;
 
         return $this;
     }

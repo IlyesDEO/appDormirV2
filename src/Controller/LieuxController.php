@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Lieux;
 use App\Repository\LieuxRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -60,7 +62,13 @@ class LieuxController extends AbstractController
     }
 */
 
-
+    /**
+     * Route qui renvoit un lieu 
+     *
+     * @param LieuxRepository $respository
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
+     */
     #[Route('/api/lieux/{idLieu}', name: 'lieux.get', methods: ['GET'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
     public function getLieux(Lieux $lieux, LieuxRepository $respository, SerializerInterface $serializer): JsonResponse
@@ -68,5 +76,14 @@ class LieuxController extends AbstractController
 
         $jsonLieux = $serializer->serialize($lieux, 'json');
         return new JsonResponse($jsonLieux, Response::HTTP_OK, ['accept'], true);
+    }
+
+    #[Route('/api/lieux/{idLieu}', name: 'lieux.delete', methods: ['DELETE'])]
+    #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
+    public function deleteLieu(Lieux $lieux, EntityManagerInterface $entityManager) : JsonResponse
+    {
+        $entityManager->remove($lieux);
+        $entityManager->flush();
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }
