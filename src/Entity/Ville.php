@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\VilleRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: VilleRepository::class)]
@@ -15,6 +13,10 @@ class Ville
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $arrondissement = null;
+
+
     #[ORM\Column]
     private ?int $CP = null;
 
@@ -24,20 +26,25 @@ class Ville
     #[ORM\Column]
     private ?bool $status = null;
 
-    #[ORM\OneToMany(mappedBy: 'idVille', targetEntity: Lieux::class)]
-    private Collection $lieux;
-
-    public function __construct()
-    {
-        $this->lieux = new ArrayCollection();
-    }
-
     
 
     public function getId(): ?int
     {
         return $this->id;
     }
+
+    public function getArrondissement(): ?string
+    {
+        return $this->arrondissement;
+    }
+
+    public function setArrondissement(string $arrondissement): self
+    {
+        $this->arrondissement = $arrondissement;
+
+        return $this;
+    }
+
   
     public function getCP(): ?int
     {
@@ -71,36 +78,6 @@ class Ville
     public function setStatus(bool $status): self
     {
         $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Lieux>
-     */
-    public function getLieux(): Collection
-    {
-        return $this->lieux;
-    }
-
-    public function addLieux(Lieux $lieux): self
-    {
-        if (!$this->lieux->contains($lieux)) {
-            $this->lieux->add($lieux);
-            $lieux->setIdVille($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLieux(Lieux $lieux): self
-    {
-        if ($this->lieux->removeElement($lieux)) {
-            // set the owning side to null (unless already changed)
-            if ($lieux->getIdVille() === $this) {
-                $lieux->setIdVille(null);
-            }
-        }
 
         return $this;
     }
