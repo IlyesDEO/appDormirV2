@@ -2,11 +2,12 @@
 
 namespace App\DataFixtures;
 
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
-use App\Entity\Lieux;
 use Faker\Factory;
 use Faker\Generator;
+use App\Entity\Lieux;
+use App\Entity\Ville;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 
 class AppFixtures extends Fixture
 {
@@ -26,7 +27,14 @@ private Generator $faker;
         // $product = new Product();
         // $manager->persist($product);
          
+        //Ville
         
+        $ville = new Ville();
+        $ville->setNomVille("Lyon")
+            ->setCP(69000);
+            ->setArrondissement()
+        $manager->persist($ville);
+        $manager->flush();
     //Lieux
         $lieux = new lieux();
             $lieux->setDescription("Foyé")
@@ -52,11 +60,6 @@ private Generator $faker;
     ->setStatus(1);
 $manager->persist($lieux);
 $manager->flush();
-
-
-
-//Ville
-
 
 
 }

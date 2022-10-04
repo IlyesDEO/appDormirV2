@@ -86,4 +86,14 @@ class LieuxController extends AbstractController
         $entityManager->flush();
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
+
+    #[Route('/api/lieux/{idLieu}', name: 'lieux.turnOff', methods: ['DELETE'])]
+    #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
+    public function statusLieu(Lieux $lieux, EntityManagerInterface $entityManager) : JsonResponse
+    {
+        $lieux->setStatus(false);
+        $entityManager->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
 }
