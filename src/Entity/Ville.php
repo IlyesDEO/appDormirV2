@@ -13,10 +13,6 @@ class Ville
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $arrondissement = null;
-
-
     #[ORM\Column]
     private ?int $CP = null;
 
@@ -32,19 +28,6 @@ class Ville
     {
         return $this->id;
     }
-
-    public function getArrondissement(): ?string
-    {
-        return $this->arrondissement;
-    }
-
-    public function setArrondissement(string $arrondissement): self
-    {
-        $this->arrondissement = $arrondissement;
-
-        return $this;
-    }
-
   
     public function getCP(): ?int
     {

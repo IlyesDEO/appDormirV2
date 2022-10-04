@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LieuxRepository::class)]
 class Lieux
@@ -19,6 +20,7 @@ class Lieux
 
     #[ORM\Column(length: 255)]
     #[Groups(["getAllLieux", "getLieux"])]
+    #[Assert\NotNull(message:'Un lieu doit avoir une description')]
     private ?string $description = null;
 
     #[ORM\Column]
@@ -36,10 +38,6 @@ class Lieux
 
     #[ORM\OneToMany(mappedBy: 'idVille', targetEntity: self::class)]
     private Collection $lieux;
-
-    #[ORM\ManyToOne(inversedBy: 'lieux')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Categorie $idCat = null;
 
     public function __construct()
     {
@@ -138,18 +136,6 @@ class Lieux
                 $lieux->setIdVille(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getIdCat(): ?Categorie
-    {
-        return $this->idCat;
-    }
-
-    public function setIdCat(?Categorie $idCat): self
-    {
-        $this->idCat = $idCat;
 
         return $this;
     }
