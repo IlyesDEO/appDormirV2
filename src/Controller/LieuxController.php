@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Lieux;
 use Doctrine\ORM\EntityManager;
 use App\Repository\LieuxRepository;
+use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -102,7 +103,7 @@ class LieuxController extends AbstractController
     }
     
     #[Route('/api/lieux', name: 'lieux.create', methods: ['POST'])]
-    public function createLieu(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator) : JsonResponse
+    public function createLieu(Request $request,VilleRepository $villeRepository, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator) : JsonResponse
     {
 
         $lieu = $serializer->deserialize(
@@ -127,7 +128,7 @@ class LieuxController extends AbstractController
 
         $jsonLieux = $serializer->serialize($lieu, 'json', ['groups' => 'getLieux']);
 
-        $location = $urlGenerator->generate('lieux.get', ['idLieux' => Lieux->getId()]);
+        $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieu->getId()]);
         return new JsonResponse($jsonLieux, Response::HTTP_CREATED, location[$location], true); 
     }
 
