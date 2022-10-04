@@ -20,9 +20,13 @@ class Ville
     #[ORM\Column]
     private ?int $CP = null;
 
-    #[ORM\Column]
-    private ?int $status = null;
+    #[ORM\Column(length: 255)]
+    private ?string $nomVille = null;
 
+    #[ORM\Column]
+    private ?bool $status = null;
+
+    
 
     public function getId(): ?int
     {
@@ -54,16 +58,29 @@ class Ville
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getNomVille(): ?string
+    {
+        return $this->nomVille;
+    }
+
+    public function setNomVille(string $nomVille): self
+    {
+        $this->nomVille = $nomVille;
+
+        return $this;
+    }
+
+    public function isStatus(): ?bool
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus(bool $status): self
     {
         $this->status = $status;
 
         return $this;
     }
+
 
 }
