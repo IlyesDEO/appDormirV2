@@ -69,4 +69,6 @@ class LieuxController extends AbstractController
         $jsonLieux = $serializer->serialize($lieux, 'json');
         return new JsonResponse($jsonLieux, Response::HTTP_OK, ['accept'], true);
     }
+
+    // test
 }
