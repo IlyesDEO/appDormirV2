@@ -13,41 +13,40 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 class AppFixtures extends Fixture
 {
 
-private Generator $faker;
-/**
- * 
- * @var Generator
- */
+    private Generator $faker;
+    /**
+     * 
+     * @var Generator
+     */
 
- public function __construct(){
-    $this->faker = Factory::create('fr_FR');
-    
- }
+    public function __construct()
+    {
+        $this->faker = Factory::create('fr_FR');
+    }
     public function load(ObjectManager $manager): void
     {
         // $product = new Product();
         // $manager->persist($product);
-         
+
         //Ville  
-        $villes = [];     
+        $villes = [];
         $ville = new Ville();
         $ville->setNomVille("Lyon")
-            ->setCP(69003)
             ->setStatus(1);
         $manager->persist($ville);
         $villes[] = $ville;
         $manager->flush();
-        
+
         //Lieux
         $lieux = new Lieux();
-            $lieux->setDescription("Foyer chaleureux")
+        $lieux->setDescription("Foyer chaleureux")
             ->setNote(8)
             ->setAdresse("236 cours Lafayette")
             ->setStatus(1)
             ->setIdVille($villes[0]);
         $manager->persist($lieux);
         $manager->flush();
-    
+
 
         $lieux = new Lieux();
         $lieux->setDescription("Gare de part-dieu")
@@ -66,8 +65,5 @@ private Generator $faker;
             ->setIdVille($villes[0]);
         $manager->persist($lieux);
         $manager->flush();
-
-
-}
-
+    }
 }

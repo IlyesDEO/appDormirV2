@@ -15,9 +15,6 @@ class Ville
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $CP = null;
-
     #[ORM\Column(length: 255)]
     private ?string $nomVille = null;
 
@@ -37,18 +34,6 @@ class Ville
     public function getId(): ?int
     {
         return $this->id;
-    }
-  
-    public function getCP(): ?int
-    {
-        return $this->CP;
-    }
-
-    public function setCP(int $CP): self
-    {
-        $this->CP = $CP;
-
-        return $this;
     }
 
     public function getNomVille(): ?string
