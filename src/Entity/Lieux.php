@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LieuxRepository::class)]
 class Lieux
@@ -19,6 +20,7 @@ class Lieux
 
     #[ORM\Column(length: 255)]
     #[Groups(["getAllLieux", "getLieux"])]
+    #[Assert\NotNull(message:'Un lieu doit avoir une description')]
     private ?string $description = null;
 
     #[ORM\Column]
@@ -31,11 +33,8 @@ class Lieux
     #[ORM\Column]
     private ?bool $status = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'lieux')]
-    private ?self $idVille = null;
-
-    #[ORM\OneToMany(mappedBy: 'idVille', targetEntity: self::class)]
-    private Collection $lieux;
+    #[ORM\ManyToOne(inversedBy: 'lieux')]
+    private ?Ville $idVille = null;
 
     public function __construct()
     {
@@ -96,44 +95,14 @@ class Lieux
         return $this;
     }
 
-    public function getIdVille(): ?self
+    public function getIdVille(): ?Ville
     {
         return $this->idVille;
     }
 
-    public function setIdVille(?self $idVille): self
+    public function setIdVille(?Ville $idVille): self
     {
         $this->idVille = $idVille;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getLieux(): Collection
-    {
-        return $this->lieux;
-    }
-
-    public function addLieux(self $lieux): self
-    {
-        if (!$this->lieux->contains($lieux)) {
-            $this->lieux->add($lieux);
-            $lieux->setIdVille($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLieux(self $lieux): self
-    {
-        if ($this->lieux->removeElement($lieux)) {
-            // set the owning side to null (unless already changed)
-            if ($lieux->getIdVille() === $this) {
-                $lieux->setIdVille(null);
-            }
-        }
 
         return $this;
     }

@@ -2,30 +2,50 @@
 
 namespace App\DataFixtures;
 
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
-use App\Entity\Lieux;
 use Faker\Factory;
+use App\Entity\User;
 use Faker\Generator;
+use App\Entity\Lieux;
+use App\Entity\Ville;
+use Doctrine\Persistence\ObjectManager;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
 
-    private Generator $faker;
-    /**
+  /**
      * 
      * @var Generator
      */
+    private Generator $faker;
 
-    public function __construct()
+
+    /**
+     * Undocumented variable
+     *
+     * @var userPasswordHasherInterface
+     */
+    private $userPasswordHasher;
+    
+    public function __construct(UserPasswordHasherInterface $userPasswordHasher)
     {
-        $this->faker = Factory::create('fr_FR');
+        $this->faker = Factory::create('fr');
+        $this->userPasswordHasher = $userPasswordHasher;
     }
     public function load(ObjectManager $manager): void
     {
+
+            $amdinUser = new User();
+            $amdinUser->setUsername('admin')
+                 ->setRoles(['ADMIN'])
+                 ->setPassword($this->userPasswordHasher->hashPassword($amdinUser, 'password'));
+            $manager->persist($amdinUser);
+        
+
+        
         // $product = new Product();
         // $manager->persist($product);
-<<<<<<< HEAD
 
         //Ville  
         $villes = [];
@@ -39,13 +59,6 @@ class AppFixtures extends Fixture
         //Lieux
         $lieux = new Lieux();
         $lieux->setDescription("Foyer chaleureux")
-=======
-         
-        
-    //Lieux
-        $lieux = new lieux();
-            $lieux->setDescription("Foyé")
->>>>>>> antoine
             ->setNote(8)
             ->setAdresse("236 cours Lafayette")
             ->setStatus(1);
@@ -73,7 +86,6 @@ $manager->flush();
 
 //Ville
 
-<<<<<<< HEAD
         $lieux = new Lieux();
         $lieux->setDescription("Confluence")
             ->setNote(8)
@@ -83,8 +95,4 @@ $manager->flush();
         $manager->persist($lieux);
         $manager->flush();
     }
-=======
-
-
->>>>>>> antoine
 }
