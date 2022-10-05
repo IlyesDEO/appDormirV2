@@ -83,6 +83,9 @@ class LieuxController extends AbstractController
         return new JsonResponse($jsonLieux, Response::HTTP_OK, ['accept'], true);
     }
 
+    /**
+     * Route qui delete un lieu
+     */
     #[Route('/api/lieux/{idLieu}', name: 'lieux.delete', methods: ['DELETE'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
     public function deleteLieu(Lieux $lieux, EntityManagerInterface $entityManager) : JsonResponse
@@ -92,6 +95,9 @@ class LieuxController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * Route qui met le status a false
+     */
     #[Route('/api/lieux/{idLieu}', name: 'lieux.turnOff', methods: ['DELETE'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
     public function statusLieu(Lieux $lieux, EntityManagerInterface $entityManager) : JsonResponse
@@ -102,6 +108,17 @@ class LieuxController extends AbstractController
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
     
+    /**
+     * Route qui crée un lieu
+     *
+     * @param Request $request
+     * @param VilleRepository $villeRepository
+     * @param EntityManagerInterface $entityManager
+     * @param SerializerInterface $serializer
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param ValidatorInterface $validator
+     * @return JsonResponse
+     */
     #[Route('/api/lieux', name: 'lieux.create', methods: ['POST'])]
     public function createLieu(Request $request,VilleRepository $villeRepository, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator) : JsonResponse
     {
@@ -129,10 +146,19 @@ class LieuxController extends AbstractController
         $jsonLieux = $serializer->serialize($lieu, 'json', ['groups' => 'getLieux']);
 
         $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieu->getId()]);
-        return new JsonResponse($jsonLieux, Response::HTTP_CREATED, location[$location], true); 
+        return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true); 
     }
 
-
+    /**
+     * Route qui update un lieu
+     *
+     * @param Lieux $lieux
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param SerializerInterface $serializer
+     * @param UrlGeneratorInterface $urlGenerator
+     * @return JsonResponse
+     */
     #[Route('/api/lieux', name: 'lieux.update', methods: ['PUT'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
     public function updateLieu(Lieux $lieux, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator) : JsonResponse
@@ -154,7 +180,7 @@ class LieuxController extends AbstractController
         
         $jsonLieux = $serializer->serialize($lieu, 'json', ['groups' => 'getLieux']);
 
-        $location = $urlGenerator->generate('lieux.get', ['idLieux' => $Lieux->getId()]);
-        return new JsonResponse($jsonLieux, Response::HTTP_CREATED, location[$location], true);
+        $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieux->getId()]);
+        return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true);
     }
 }
