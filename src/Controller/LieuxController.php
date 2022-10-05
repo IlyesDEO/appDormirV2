@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -76,6 +77,7 @@ class LieuxController extends AbstractController
      */
     #[Route('/api/lieux/{idLieu}', name: 'lieux.get', methods: ['GET'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
+    #[IsGranted('ADMIN', message:'Accès refusé')]
     public function getLieux(Lieux $lieux, LieuxRepository $respository, SerializerInterface $serializer): JsonResponse
     {
 
@@ -120,6 +122,7 @@ class LieuxController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/lieux', name: 'lieux.create', methods: ['POST'])]
+    #[IsGranted('ADMIN', message:'Accès refusé')]
     public function createLieu(Request $request,VilleRepository $villeRepository, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator) : JsonResponse
     {
 
