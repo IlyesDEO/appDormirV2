@@ -2,13 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Categorie;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
+use App\Entity\Lieux;
 use Faker\Factory;
 use Faker\Generator;
-use App\Entity\Lieux;
-use App\Entity\Ville;
-use Doctrine\Persistence\ObjectManager;
-use Doctrine\Bundle\FixturesBundle\Fixture;
 
 class AppFixtures extends Fixture
 {
@@ -27,6 +25,7 @@ class AppFixtures extends Fixture
     {
         // $product = new Product();
         // $manager->persist($product);
+<<<<<<< HEAD
 
         //Ville  
         $villes = [];
@@ -40,23 +39,41 @@ class AppFixtures extends Fixture
         //Lieux
         $lieux = new Lieux();
         $lieux->setDescription("Foyer chaleureux")
+=======
+         
+        
+    //Lieux
+        $lieux = new lieux();
+            $lieux->setDescription("Foyé")
+>>>>>>> antoine
             ->setNote(8)
             ->setAdresse("236 cours Lafayette")
-            ->setStatus(1)
-            ->setIdVille($villes[0]);
+            ->setStatus(1);
         $manager->persist($lieux);
         $manager->flush();
 
 
-        $lieux = new Lieux();
+        $lieux = new lieux();
         $lieux->setDescription("Gare de part-dieu")
-            ->setNote(8)
-            ->setAdresse("5 Pl. Charles Béraudier, 69003 Lyon")
-            ->setStatus(1)
-            ->setIdVille($villes[0]);
-        $manager->persist($lieux);
-        $manager->flush();
+        ->setNote(8)
+        ->setAdresse("5 Pl. Charles Béraudier, 69003 Lyon")
+        ->setStatus(1);
+    $manager->persist($lieux);
+    $manager->flush();
 
+    $lieux = new lieux();
+    $lieux->setDescription("Confluence")
+    ->setNote(8)
+    ->setAdresse("112 Cr Charlemagne, 69002 Lyon ")
+    ->setStatus(1);
+$manager->persist($lieux);
+$manager->flush();
+
+
+
+//Ville
+
+<<<<<<< HEAD
         $lieux = new Lieux();
         $lieux->setDescription("Confluence")
             ->setNote(8)
@@ -66,4 +83,8 @@ class AppFixtures extends Fixture
         $manager->persist($lieux);
         $manager->flush();
     }
+=======
+
+
+>>>>>>> antoine
 }
