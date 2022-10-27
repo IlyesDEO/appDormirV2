@@ -36,11 +36,15 @@ class LieuxController extends AbstractController
      * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    #[Route('/api/lieux', name: 'lieux.getAll')]
-    public function getAllLieux(LieuxRepository $respository, SerializerInterface $serializer): JsonResponse
+    #[Route('/api/lieux', name: 'lieux.getAll', methods: ['GET'])]
+    public function getAllLieux(Request $request, LieuxRepository $repository, SerializerInterface $serializer): JsonResponse
     {
-
-        $lieux = $respository->findAll();
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 2);
+        $limit = $limit > 20 ? 20 : $limit;
+        $page = $page < 0 ? 1 : $page;
+        $lieux = $repository->findWithPagination($page, $limit);
+        //$lieux = $repository->findAll();
         $jsonLieux = $serializer->serialize($lieux, 'json', ["groups" => "getAllLieux"]);
         return new JsonResponse($jsonLieux, Response::HTTP_OK, [], true);
     }
@@ -77,8 +81,7 @@ class LieuxController extends AbstractController
      */
     #[Route('/api/lieux/{idLieu}', name: 'lieux.get', methods: ['GET'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
-    #[IsGranted('ADMIN', message:'Accès refusé')]
-    public function getLieux(Lieux $lieux, LieuxRepository $respository, SerializerInterface $serializer): JsonResponse
+    public function getLieux(Lieux $lieux, SerializerInterface $serializer): JsonResponse
     {
 
         $jsonLieux = $serializer->serialize($lieux, 'json');
@@ -122,7 +125,7 @@ class LieuxController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/lieux', name: 'lieux.create', methods: ['POST'])]
-    #[IsGranted('ADMIN', message:'Accès refusé')]
+    #[IsGranted('ADMIN', message: "NO access")]
     public function createLieu(Request $request,VilleRepository $villeRepository, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator) : JsonResponse
     {
 
@@ -165,6 +168,31 @@ class LieuxController extends AbstractController
     #[Route('/api/lieux', name: 'lieux.update', methods: ['PUT'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
     public function updateLieu(Lieux $lieux, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator) : JsonResponse
+    {
+
+        $updateLieu = $serializer->deserialize(
+            $request->getContent(),
+            Lieux::class,
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $lieux]
+        );
+        $updateLieu->setStatus(true);
+        
+        $lieu = new Lieux();
+        $lieu->setStatus(true);
+        $entityManager->persist($lieu);
+        $entityManager->flush();
+        
+        
+        $jsonLieux = $serializer->serialize($lieu, 'json', ['groups' => 'getLieux']);
+
+        $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieux->getId()]);
+        return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true);
+    }
+
+    #[Route('/api/noteLieu', name: 'noteLieu.update', methods: ['PUT'])]
+    #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
+    public function updateNoteLieu(Lieux $lieux, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator) : JsonResponse
     {
 
         $updateLieu = $serializer->deserialize(
