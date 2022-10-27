@@ -65,9 +65,16 @@ class LieuxRepository extends ServiceEntityRepository
 //    }
 
     public function findWithPagination($page, $limit){
-        $qb = $this->createQueryBuilder("c")
+        $qb = $this->createQueryBuilder("l")
         ->setMaxResults($limit)
         ->setFirstResult(($page - 1) * $limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findWithStatus(){
+        $qb = $this->createQueryBuilder('l')
+                    ->andWhere('l.status = 1');
 
         return $qb->getQuery()->getResult();
     }

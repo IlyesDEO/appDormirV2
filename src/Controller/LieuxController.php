@@ -30,7 +30,7 @@ class LieuxController extends AbstractController
         ]);
     }
     /**
-     * Route qui renvoit tout les cours 
+     * Route qui renvoit tout les lieux
      *
      * @param LieuxRepository $respository
      * @param SerializerInterface $serializer
@@ -86,6 +86,22 @@ class LieuxController extends AbstractController
 
         $jsonLieux = $serializer->serialize($lieux, 'json');
         return new JsonResponse($jsonLieux, Response::HTTP_OK, ['accept'], true);
+    }
+
+
+    /**
+     * Route qui renvoit les lieux avec status à 1
+     *
+     * @param LieuxRepository $respository
+     * @param SerializerInterface $serializer
+     * @return JsonResponse
+     */
+    #[Route('/api/lieuxStatus', name: 'lieuxStatus.get', methods: ['GET'])]
+    public function getAllLieuxStatus(LieuxRepository $repository, SerializerInterface $serializer): JsonResponse
+    {
+        $lieux = $repository->findWithStatus();
+        $jsonLieux = $serializer->serialize($lieux, 'json', ['groups' => 'getAllLieuxStatus']);
+        return new JsonResponse($jsonLieux, Response::HTTP_OK, [], true);
     }
 
     /**
@@ -214,4 +230,7 @@ class LieuxController extends AbstractController
         $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieux->getId()]);
         return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true);
     }
+
+
 }
+

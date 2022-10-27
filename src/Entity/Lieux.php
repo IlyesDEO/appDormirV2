@@ -15,19 +15,21 @@ class Lieux
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getAllLieux", "getLieux"])]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getAllLieux", "getLieux"])]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     #[Assert\NotNull(message:'Un lieu doit avoir une description')]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?int $note = null;
 
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?string $adresse = null;
 
     #[ORM\Column]
