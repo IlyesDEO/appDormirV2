@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Lieux;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Repository\Parameter;
 
 /**
  * @extends ServiceEntityRepository<Lieux>
@@ -78,4 +80,39 @@ class LieuxRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /* public function findBetweenDates(
+        DateTimeImmutable $startDate,
+        DateTimeImmutable $endDate,
+        int $page,
+        int $limit,
+    )
+    {
+        $startDate = $startDate ? $startDate : new \DateTimeImmutable();
+        
+        $qb = $this->createQueryBuilder("l");
+        $qb->add(
+            'where',
+            $qb->expr()->orX(
+                $qb->expr()->andX(
+                    $qb->expr()->gte(dateStart , :startDate)),
+                    $qb->expr()->lte(dateStart , :endDate)
+                ),
+                $qb->expr()->andX(
+                    $qb->expr()->gte(dateStart , :startDate)),
+                    $qb->expr()->lte(dateStart , :endDate)
+                )
+            )
+        ) 
+        ->setParameters(
+            new ArrayCollection(
+                [
+                    new Parameter('startDate', $startDate, Types::DATETIME_IMMUTABLE),
+                    new Parameter('endDate', $endDate, Types::DATETIME_IMMUTABLE),
+                ]
+            )
+                );
+                return $qb->getQuery()->getResult();
+    }
+    */
 }

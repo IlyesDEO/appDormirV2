@@ -6,6 +6,8 @@ use App\Repository\VilleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+//use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: VilleRepository::class)]
 class Ville
@@ -13,9 +15,11 @@ class Ville
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?string $nomVille = null;
 
     #[ORM\Column]

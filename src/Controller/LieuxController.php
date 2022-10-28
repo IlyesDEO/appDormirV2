@@ -6,18 +6,24 @@ use App\Entity\Lieux;
 use Doctrine\ORM\EntityManager;
 use App\Repository\LieuxRepository;
 use App\Repository\VilleRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Serializer\SerializerInterface;
+//use Symfony\Component\Serializer\SerializerInterface;
+use JMS\Serializer\SerializerInterface;
+use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializationContext;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class LieuxController extends AbstractController
 {
@@ -37,15 +43,23 @@ class LieuxController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/lieux', name: 'lieux.getAll', methods: ['GET'])]
-    public function getAllLieux(Request $request, LieuxRepository $repository, SerializerInterface $serializer): JsonResponse
+    public function getAllLieux(Request $request, LieuxRepository $repository, SerializerInterface $serializer, TagAwareCacheInterface $cache): JsonResponse
     {
         $page = $request->get('page', 1);
         $limit = $request->get('limit', 2);
         $limit = $limit > 20 ? 20 : $limit;
         $page = $page < 0 ? 1 : $page;
         $lieux = $repository->findWithPagination($page, $limit);
-        //$lieux = $repository->findAll();
-        $jsonLieux = $serializer->serialize($lieux, 'json', ["groups" => "getAllLieux"]);
+        
+        $jsonLieux = $cache->get("getAllLieux", function (ItemInterface $item) use ($lieux, $serializer) {
+            $item->tag("lieuxCache");
+            echo"Mise en cache";
+            $context = SerializationContext::create()->setGroups(['getAllLieux']);
+            return $serializer->serialize($lieux, 'json',$context);
+
+        });
+        
+        $context = SerializationContext::create()->setGroups(['getAllLieux']);
         return new JsonResponse($jsonLieux, Response::HTTP_OK, [], true);
     }
 
@@ -84,7 +98,7 @@ class LieuxController extends AbstractController
     public function getLieux(Lieux $lieux, SerializerInterface $serializer): JsonResponse
     {
 
-        $jsonLieux = $serializer->serialize($lieux, 'json');
+        $jsonLieux = $serializer->serialize($lieux, 'json', ['groups' => 'getLieux']);
         return new JsonResponse($jsonLieux, Response::HTTP_OK, ['accept'], true);
     }
 
@@ -109,8 +123,9 @@ class LieuxController extends AbstractController
      */
     #[Route('/api/lieux/{idLieu}', name: 'lieux.delete', methods: ['DELETE'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
-    public function deleteLieu(Lieux $lieux, EntityManagerInterface $entityManager) : JsonResponse
+    public function deleteLieu(Lieux $lieux, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache) : JsonResponse
     {
+        $cache->invalidateTags(["lieuxCache"]);
         $entityManager->remove($lieux);
         $entityManager->flush();
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
@@ -121,8 +136,9 @@ class LieuxController extends AbstractController
      */
     #[Route('/api/lieux/{idLieu}', name: 'lieux.turnOff', methods: ['DELETE'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
-    public function statusLieu(Lieux $lieux, EntityManagerInterface $entityManager) : JsonResponse
+    public function statusLieu(Lieux $lieux, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache) : JsonResponse
     {
+        $cache->invalidateTags(["lieuxCache"]);
         $lieux->setStatus(false);
         $entityManager->flush();
 
@@ -205,8 +221,10 @@ class LieuxController extends AbstractController
         $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieux->getId()]);
         return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true);
     }
-
-    #[Route('/api/noteLieu', name: 'noteLieu.update', methods: ['PUT'])]
+    /**
+     * Route qui modifie une note pour un lieu
+     */
+    #[Route('/api/noteLieu/{idLieu}', name: 'noteLieu.update', methods: ['PUT'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
     public function updateNoteLieu(Lieux $lieux, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator) : JsonResponse
     {
@@ -230,7 +248,5 @@ class LieuxController extends AbstractController
         $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieux->getId()]);
         return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true);
     }
-
-
 }
 

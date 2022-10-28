@@ -6,8 +6,27 @@ use App\Repository\LieuxRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+//use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
+/**
+ * @Hateoas\Relation(
+ *     "self",
+ *     href= @Hateoas\Route(
+ *          "lieux.get",
+ *          parameters = { "idLieu" = "expr(object.getId())" } 
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getLieux")
+ * )
+ * @Hateoas\Relation(
+ *     "self",
+ *     href= @Hateoas\Route(
+ *          "lieux.getAll",
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getAllLieux")
+ * )
+ */
 
 #[ORM\Entity(repositoryClass: LieuxRepository::class)]
 class Lieux
@@ -36,7 +55,10 @@ class Lieux
     private ?bool $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'lieux')]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?Ville $idVille = null;
+
+
 
     public function __construct()
     {
@@ -108,4 +130,5 @@ class Lieux
 
         return $this;
     }
+
 }
