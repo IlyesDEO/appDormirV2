@@ -64,4 +64,3 @@ class NotesController extends AbstractController
         return new JsonResponse($jsonNote, Response::HTTP_CREATED, ['location' => $location], "json", true); 
     }
 }
-
