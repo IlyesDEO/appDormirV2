@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\NotesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: NotesRepository::class)]
 class Notes
@@ -14,7 +15,14 @@ class Notes
     private ?int $id = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?int $note = null;
+
+    #[ORM\OneToOne(inversedBy: 'idNote', cascade: ['persist', 'remove'])]
+    private ?Lieux $Lieux = null;
+
+    #[ORM\ManyToOne(inversedBy: 'idNote')]
+    private ?User $User = null;
 
     public function getId(): ?int
     {
@@ -29,6 +37,30 @@ class Notes
     public function setNote(?int $note): self
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    public function getLieux(): ?Lieux
+    {
+        return $this->Lieux;
+    }
+
+    public function setLieux(?Lieux $Lieux): self
+    {
+        $this->Lieux = $Lieux;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->User;
+    }
+
+    public function setUser(?User $User): self
+    {
+        $this->User = $User;
 
         return $this;
     }
