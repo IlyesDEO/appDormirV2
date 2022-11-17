@@ -53,7 +53,6 @@ class Lieux
 
     #[ORM\Column]
     private ?bool $status = null;
-
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?Ville $idVille = null;
@@ -119,16 +118,45 @@ class Lieux
         return $this;
     }
 
-    public function getIdVille(): ?Ville
+    public function getIdVille(): ?self
     {
         return $this->idVille;
     }
 
-    public function setIdVille(?Ville $idVille): self
+    public function setIdVille(?self $idVille): self
     {
         $this->idVille = $idVille;
 
         return $this;
     }
 
+    /**
+     * @return Collection<int, self>
+     */
+    public function getLieux(): Collection
+    {
+        return $this->lieux;
+    }
+
+    public function addLieux(self $lieux): self
+    {
+        if (!$this->lieux->contains($lieux)) {
+            $this->lieux->add($lieux);
+            $lieux->setIdVille($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLieux(self $lieux): self
+    {
+        if ($this->lieux->removeElement($lieux)) {
+            // set the owning side to null (unless already changed)
+            if ($lieux->getIdVille() === $this) {
+                $lieux->setIdVille(null);
+            }
+        }
+
+        return $this;
+    }
 }
