@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use Hateoas\Configuration\Annotation as Hateoas;
 use Symfony\Component\Validator\Constraints as Assert;
+use OpenApi\Attributes as OA;
 /**
  * @Hateoas\Relation(
  *     "self",
@@ -25,6 +26,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "lieux.getAll",
  *      ),
  *      exclusion = @Hateoas\Exclusion(groups="getAllLieux")
+ * )
+ * @Hateoas\Relation(
+ *     "self",
+ *     href= @Hateoas\Route(
+ *          "lieuxStatus.get",
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getAllLieuxStatus")
  * )
  */
 
@@ -42,11 +50,6 @@ class Lieux
     #[Assert\NotNull(message:'Un lieu doit avoir une description')]
     private ?string $description = null;
 
-    #[ORM\Column]
-    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
-    private ?int $note = null;
-
-
     #[ORM\Column(length: 255)]
     #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?string $adresse = null;
@@ -57,6 +60,9 @@ class Lieux
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?Ville $idVille = null;
+
+    #[ORM\OneToOne(mappedBy: 'Lieux', cascade: ['persist', 'remove'])]
+    private ?Notes $idNote = null;
 
 
 
@@ -81,19 +87,6 @@ class Lieux
 
         return $this;
     }
-
-    public function getNote(): ?int
-    {
-        return $this->note;
-    }
-
-    public function setNote(int $note): self
-    {
-        $this->note = $note;
-
-        return $this;
-    }
-
 
     public function getAdresse(): ?string
     {
@@ -127,6 +120,28 @@ class Lieux
     public function setIdVille(?Ville $idVille): self
     {
         $this->idVille = $idVille;
+
+        return $this;
+    }
+
+    public function getIdNote(): ?Notes
+    {
+        return $this->idNote;
+    }
+
+    public function setIdNote(?Notes $idNote): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($idNote === null && $this->idNote !== null) {
+            $this->idNote->setLieux(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($idNote !== null && $idNote->getLieux() !== $this) {
+            $idNote->setLieux($this);
+        }
+
+        $this->idNote = $idNote;
 
         return $this;
     }

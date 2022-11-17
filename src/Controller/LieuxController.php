@@ -98,8 +98,10 @@ class LieuxController extends AbstractController
     public function getLieux(Lieux $lieux, SerializerInterface $serializer): JsonResponse
     {
 
-        $jsonLieux = $serializer->serialize($lieux, 'json', ['groups' => 'getLieux']);
+        $context = SerializationContext::create()->setGroups(['getAllLieux']);
+        $jsonLieux = $serializer->serialize($lieux, 'json', $context );
         return new JsonResponse($jsonLieux, Response::HTTP_OK, ['accept'], true);
+        
     }
 
 
@@ -114,13 +116,15 @@ class LieuxController extends AbstractController
     public function getAllLieuxStatus(LieuxRepository $repository, SerializerInterface $serializer): JsonResponse
     {
         $lieux = $repository->findWithStatus();
-        $jsonLieux = $serializer->serialize($lieux, 'json', ['groups' => 'getAllLieuxStatus']);
+        $context = SerializationContext::create()->setGroups(['getAllLieuxStatus']);
+        $jsonLieux = $serializer->serialize($lieux, 'json', $context);
         return new JsonResponse($jsonLieux, Response::HTTP_OK, [], true);
     }
 
     /**
      * Route qui delete un lieu
      */
+    /*
     #[Route('/api/lieux/{idLieu}', name: 'lieux.delete', methods: ['DELETE'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
     public function deleteLieu(Lieux $lieux, EntityManagerInterface $entityManager, TagAwareCacheInterface $cache) : JsonResponse
@@ -129,7 +133,7 @@ class LieuxController extends AbstractController
         $entityManager->remove($lieux);
         $entityManager->flush();
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
-    }
+    }*/
 
     /**
      * Route qui met le status a false
@@ -181,7 +185,8 @@ class LieuxController extends AbstractController
         $entityManager->persist($lieu);
         $entityManager->flush();
 
-        $jsonLieux = $serializer->serialize($lieu, 'json', ['groups' => 'getLieux']);
+        $context = SerializationContext::create();
+        $jsonLieux = $serializer->serialize($lieu, 'json',$context);
 
         $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieu->getId()]);
         return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true); 
@@ -206,44 +211,16 @@ class LieuxController extends AbstractController
             $request->getContent(),
             Lieux::class,
             'json',
-            [AbstractNormalizer::OBJECT_TO_POPULATE => $lieux]
+            
         );
+        $content = $request->toArray();
+        $updateLieu->setDescription($updateLieu->getDescription() ?? $lieux->getDescription());
+        $updateLieu->setAdresse($updateLieu->getAdresse() ?? $lieux->getAdresse());
+        $updateLieu->setIdVille($updateLieu->getIdVille() ?? $lieux->getIdVille());
         $updateLieu->setStatus(true);
-        
-        $lieu = new Lieux();
-        $lieu->setStatus(true);
-        $entityManager->persist($lieu);
-        $entityManager->flush();
-        
-        
-        $jsonLieux = $serializer->serialize($lieu, 'json', ['groups' => 'getLieux']);
 
-        $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieux->getId()]);
-        return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true);
-    }
-    /**
-     * Route qui modifie une note pour un lieu
-     */
-    #[Route('/api/noteLieu/{idLieu}', name: 'noteLieu.update', methods: ['PUT'])]
-    #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
-    public function updateNoteLieu(Lieux $lieux, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, UrlGeneratorInterface $urlGenerator) : JsonResponse
-    {
-
-        $updateLieu = $serializer->deserialize(
-            $request->getContent(),
-            Lieux::class,
-            'json',
-            [AbstractNormalizer::OBJECT_TO_POPULATE => $lieux]
-        );
-        $updateLieu->setStatus(true);
-        
-        $lieu = new Lieux();
-        $lieu->setStatus(true);
-        $entityManager->persist($lieu);
-        $entityManager->flush();
-        
-        
-        $jsonLieux = $serializer->serialize($lieu, 'json', ['groups' => 'getLieux']);
+        $context = SerializationContext::create();
+        $jsonLieux = $serializer->serialize($lieux, 'json',$context);
 
         $location = $urlGenerator->generate('lieux.get', ['idLieux' => $lieux->getId()]);
         return new JsonResponse($jsonLieux, Response::HTTP_CREATED, ['location' => $location], "json", true);

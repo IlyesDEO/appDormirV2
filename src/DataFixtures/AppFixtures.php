@@ -73,7 +73,6 @@ class AppFixtures extends Fixture
         //Lieux
         $lieux = new Lieux();
         $lieux->setDescription("Foyer chaleureux")
-            ->setNote(8)
             ->setAdresse("236 cours Lafayette")
             ->setStatus(1)
             ->setIdVille($villes[0]);
@@ -83,7 +82,6 @@ class AppFixtures extends Fixture
 
         $lieux = new lieux();
         $lieux->setDescription("Gare de part-dieu")
-        ->setNote(8)
         ->setAdresse("5 Pl. Charles Béraudier, 69003 Lyon")
         ->setStatus(1)
         ->setIdVille($villes[0]);
@@ -92,7 +90,6 @@ class AppFixtures extends Fixture
 
         $lieux = new lieux();
         $lieux->setDescription("Confluence")
-        ->setNote(8)
         ->setAdresse("112 Cr Charlemagne, 69002 Lyon ")
         ->setStatus(1)
         ->setIdVille($villes[0]);
@@ -101,7 +98,6 @@ class AppFixtures extends Fixture
 
         $lieux = new Lieux();
         $lieux->setDescription("Trop de monde")
-            ->setNote(8)
             ->setAdresse("La defense")
             ->setStatus(1)
             ->setIdVille($villes[1]);
@@ -111,7 +107,6 @@ class AppFixtures extends Fixture
 
         $lieux = new lieux();
         $lieux->setDescription("Vertige")
-        ->setNote(8)
         ->setAdresse("Tour Eiffel")
         ->setStatus(1)
         ->setIdVille($villes[1]);
@@ -120,7 +115,6 @@ class AppFixtures extends Fixture
 
         $lieux = new lieux();
         $lieux->setDescription("Ne pas être clostrophobe")
-        ->setNote(8)
         ->setAdresse("Catacombe")
         ->setStatus(1)
         ->setIdVille($villes[1]);
@@ -129,7 +123,6 @@ class AppFixtures extends Fixture
 
         $lieux = new Lieux();
         $lieux->setDescription("Froid")
-            ->setNote(8)
             ->setAdresse("Etang montpont")
             ->setStatus(1)
             ->setIdVille($villes[2]);
@@ -139,7 +132,6 @@ class AppFixtures extends Fixture
 
         $lieux = new lieux();
         $lieux->setDescription("Sol pas confortable")
-        ->setNote(8)
         ->setAdresse("Mairie")
         ->setStatus(1)
         ->setIdVille($villes[2]);
@@ -148,7 +140,6 @@ class AppFixtures extends Fixture
 
         $lieux = new lieux();
         $lieux->setDescription("Animaux sauvages")
-        ->setNote(8)
         ->setAdresse("Foret blanche")
         ->setStatus(1)
         ->setIdVille($villes[2]);
