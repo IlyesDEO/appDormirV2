@@ -8,10 +8,7 @@ use App\Entity\Lieux;
 use Faker\Factory;
 use App\Entity\User;
 use Faker\Generator;
-use App\Entity\Lieux;
 use App\Entity\Ville;
-use Doctrine\Persistence\ObjectManager;
-use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
