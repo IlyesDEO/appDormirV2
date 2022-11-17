@@ -3,8 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Lieux;
-use Doctrine\ORM\EntityManager;
-use App\Repository\LieuxRepository;
+use App\Repository\LieuxRepository
 use App\Repository\VilleRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -86,13 +85,7 @@ class LieuxController extends AbstractController
     }
 */
 
-    /**
-     * Route qui renvoit un lieu 
-     *
-     * @param LieuxRepository $respository
-     * @param SerializerInterface $serializer
-     * @return JsonResponse
-     */
+
     #[Route('/api/lieux/{idLieu}', name: 'lieux.get', methods: ['GET'])]
     #[ParamConverter('lieux', options: ['id' => 'idLieu'])]
     public function getLieux(Lieux $lieux, SerializerInterface $serializer): JsonResponse

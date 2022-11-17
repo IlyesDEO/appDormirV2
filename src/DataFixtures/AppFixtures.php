@@ -2,6 +2,9 @@
 
 namespace App\DataFixtures;
 
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
+use App\Entity\Lieux;
 use Faker\Factory;
 use App\Entity\User;
 use Faker\Generator;
@@ -10,6 +13,7 @@ use App\Entity\Ville;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class AppFixtures extends Fixture
 {
@@ -46,7 +50,6 @@ class AppFixtures extends Fixture
         
         // $product = new Product();
         // $manager->persist($product);
-
         //Ville  
         $villes = [];
         $ville = new Ville();
@@ -74,12 +77,11 @@ class AppFixtures extends Fixture
         $lieux = new Lieux();
         $lieux->setDescription("Foyer chaleureux")
             ->setAdresse("236 cours Lafayette")
-            ->setStatus(1)
-            ->setIdVille($villes[0]);
+            ->setStatus(1);
         $manager->persist($lieux);
         $manager->flush();
-
-
+        
+        
         $lieux = new lieux();
         $lieux->setDescription("Gare de part-dieu")
         ->setAdresse("5 Pl. Charles Béraudier, 69003 Lyon")
@@ -128,6 +130,12 @@ class AppFixtures extends Fixture
             ->setIdVille($villes[2]);
         $manager->persist($lieux);
         $manager->flush();
+
+
+
+
+//Ville
+
 
 
         $lieux = new lieux();

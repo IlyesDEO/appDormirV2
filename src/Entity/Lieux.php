@@ -56,7 +56,6 @@ class Lieux
 
     #[ORM\Column]
     private ?bool $status = null;
-
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?Ville $idVille = null;
@@ -112,38 +111,45 @@ class Lieux
         return $this;
     }
 
-    public function getIdVille(): ?Ville
+    public function getIdVille(): ?self
     {
         return $this->idVille;
     }
 
-    public function setIdVille(?Ville $idVille): self
+    public function setIdVille(?self $idVille): self
     {
         $this->idVille = $idVille;
 
         return $this;
     }
 
-    public function getIdNote(): ?Notes
+    /**
+     * @return Collection<int, self>
+     */
+    public function getLieux(): Collection
     {
-        return $this->idNote;
+        return $this->lieux;
     }
 
-    public function setIdNote(?Notes $idNote): self
+    public function addLieux(self $lieux): self
     {
-        // unset the owning side of the relation if necessary
-        if ($idNote === null && $this->idNote !== null) {
-            $this->idNote->setLieux(null);
+        if (!$this->lieux->contains($lieux)) {
+            $this->lieux->add($lieux);
+            $lieux->setIdVille($this);
         }
-
-        // set the owning side of the relation if necessary
-        if ($idNote !== null && $idNote->getLieux() !== $this) {
-            $idNote->setLieux($this);
-        }
-
-        $this->idNote = $idNote;
 
         return $this;
     }
 
+    public function removeLieux(self $lieux): self
+    {
+        if ($this->lieux->removeElement($lieux)) {
+            // set the owning side to null (unless already changed)
+            if ($lieux->getIdVille() === $this) {
+                $lieux->setIdVille(null);
+            }
+        }
+
+        return $this;
+    }
 }
