@@ -6,7 +6,27 @@ use App\Repository\LieuxRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+//use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+use Symfony\Component\Validator\Constraints as Assert;
+/**
+ * @Hateoas\Relation(
+ *     "self",
+ *     href= @Hateoas\Route(
+ *          "lieux.get",
+ *          parameters = { "idLieu" = "expr(object.getId())" } 
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getLieux")
+ * )
+ * @Hateoas\Relation(
+ *     "self",
+ *     href= @Hateoas\Route(
+ *          "lieux.getAll",
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups="getAllLieux")
+ * )
+ */
 
 #[ORM\Entity(repositoryClass: LieuxRepository::class)]
 class Lieux
@@ -14,28 +34,30 @@ class Lieux
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getAllLieux", "getLieux"])]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getAllLieux", "getLieux"])]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
+    #[Assert\NotNull(message:'Un lieu doit avoir une description')]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?int $note = null;
 
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?string $adresse = null;
 
     #[ORM\Column]
     private ?bool $status = null;
+    #[ORM\ManyToOne(inversedBy: 'lieux')]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
+    private ?Ville $idVille = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'lieux')]
-    private ?self $idVille = null;
 
-    #[ORM\OneToMany(mappedBy: 'idVille', targetEntity: self::class)]
-    private Collection $lieux;
 
     public function __construct()
     {

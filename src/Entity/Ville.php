@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\VilleRepository;
 use Doctrine\ORM\Mapping as ORM;
+//use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: VilleRepository::class)]
 class Ville
@@ -11,16 +13,12 @@ class Ville
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $arrondissement = null;
-
-
-    #[ORM\Column]
-    private ?int $CP = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getAllLieux", "getLieux", "getAllLieuxStatus"])]
     private ?string $nomVille = null;
 
     #[ORM\Column]
@@ -45,18 +43,6 @@ class Ville
         return $this;
     }
 
-  
-    public function getCP(): ?int
-    {
-        return $this->CP;
-    }
-
-    public function setCP(int $CP): self
-    {
-        $this->CP = $CP;
-
-        return $this;
-    }
 
     public function getNomVille(): ?string
     {
