@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Lieux;
-use App\Repository\LieuxRepository
+use App\Repository\LieuxRepository;
 use App\Repository\VilleRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
